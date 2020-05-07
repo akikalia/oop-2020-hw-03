@@ -24,13 +24,19 @@ public class MetropolisDAO {
      */
     public void addMetropolis(Metropolis entry){
         PreparedStatement stm = null;
+        int popul;
         try {
+            try {
+                popul = Integer.parseInt(entry.getPopulation());
+            } catch(NumberFormatException e){
+                popul = 0;
+            }
             stm = conn.prepareStatement(
                     "INSERT INTO metropolises VALUES\n" +
-                            "(\""+entry.getMetropolis()+"\",\""+entry.getContinent()+"\",\""+entry.getPopulation()+"\");");
+                            "(\""+entry.getMetropolis()+"\",\""+entry.getContinent()+"\","+popul+");");
             stm.executeUpdate();
             view.clear();
-            view.add(entry);
+            view.add(new Metropolis(entry.getMetropolis(), entry.getContinent(), String.valueOf(popul)));
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
@@ -50,20 +56,24 @@ public class MetropolisDAO {
         String query;
         String matchType;
         String popCmp;
-
+        int popul;
         matchType = mt ? "%" : "";
         popCmp = plt ? "<" : ">";
 
 
         query = " SELECT * FROM metropolises ";
 
-
+        try {
+            popul = Integer.parseInt(entry.getPopulation());
+        } catch(NumberFormatException e){
+            popul = 0;
+        }
         query = !metropolis.isEmpty() || !continent.isEmpty() || !population.isEmpty() ? query +  " where " : query;
         query = !metropolis.isEmpty() ?  query + " metropolis "+ "LIKE" +" \""+matchType+metropolis+matchType+"\" " : query ;
         query = !metropolis.isEmpty() && !continent.isEmpty() ? query + " and ": query;
         query = !continent.isEmpty() ?  query + " continent "+ "LIKE" +" \""+matchType+ continent+matchType+"\" " : query ;
         query = (!metropolis.isEmpty() || !continent.isEmpty()) && !population.isEmpty()  ? query + " and ": query;
-        query = !population.isEmpty() ?  query + " population " + popCmp+" "+entry.getPopulation() : query;
+        query = !population.isEmpty() ?  query + " population " + popCmp+" "+popul : query;
 
         query += ";";
         return query;
