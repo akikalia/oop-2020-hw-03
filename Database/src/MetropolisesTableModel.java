@@ -18,7 +18,8 @@ public class MetropolisesTableModel extends AbstractTableModel {
     private String username = "root";
 
     /**
-     *
+     * initializes mySQL database
+     * constructs an array for view entry bookkeeping
      *
      */
     public MetropolisesTableModel() {
@@ -64,8 +65,11 @@ public class MetropolisesTableModel extends AbstractTableModel {
     }
 
     /**
-     *
-     *
+     *calls database function which searches database for specified entry
+     * updates JTable afterward
+     *@param metropolis
+     *@param isPLT is less than textCombo selected
+     *@param isEM is exact match textbox selected
      */
     public void searchRows(Metropolis metropolis, Boolean isPLT, Boolean isEM ) {
         metropolisDAO.searchMetropolis(metropolis, isPLT, isEM);
@@ -73,8 +77,9 @@ public class MetropolisesTableModel extends AbstractTableModel {
     }
 
     /**
-     *
-     *
+     *calls database function which adds entry to database
+     * updates JTable afterward
+     *@param metropolis
      */
     public void addRow(Metropolis metropolis) {
         metropolisDAO.addMetropolis(metropolis);

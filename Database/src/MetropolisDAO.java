@@ -7,12 +7,21 @@ import java.util.List;
 public class MetropolisDAO {
     Connection conn;
     List<Metropolis> view;
+
+    /**
+     * database constructor
+     */
     public MetropolisDAO(Connection conn, List<Metropolis> view){
         this.conn = conn;
         this.view = view;
 
     }
 
+    /**
+     * adds metropolis entry to MYSQL database
+     * sets view array to contain only current entry
+     *@param entry
+     */
     public void addMetropolis(Metropolis entry){
         PreparedStatement stm = null;
         try {
@@ -25,7 +34,14 @@ public class MetropolisDAO {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-
+    /**
+     * constructs sql query based on given flags and textfield state
+     *
+     * @param entry entry to search for
+     * @param mt exact match flag
+     * @param plt population less than flag
+     *
+     */
     private String createSearchQuery(Metropolis entry, boolean mt, boolean plt){
         String population =  entry.getPopulation();
         String continent = entry.getContinent();
@@ -52,6 +68,18 @@ public class MetropolisDAO {
         query += ";";
         return query;
     }
+
+    /**
+     * searches sql table for specified
+     * sets view array to contain search result
+     * search result can be empty (in case entry was not found)
+     * or it might contain full table (in case given metropolis fields were empty)
+     *
+     * @param entry entry to search for
+     * @param mt exact match flag
+     * @param plt population less than flag
+     *
+     */
 
     public void searchMetropolis(Metropolis entry, boolean mt, boolean plt){
         PreparedStatement stm = null;
